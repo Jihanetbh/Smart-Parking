@@ -1,45 +1,45 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './signup.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./signup.css";
 
 function SignUp() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSignUp = (event) => {
     event.preventDefault();
-    setError('');
+    setError("");
 
     if (!username) {
-      setError('Please enter a username');
+      setError("Please enter a username");
       return;
     }
 
     if (!email) {
-      setError('Please enter an email address');
+      setError("Please enter an email address");
       return;
     }
 
     if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return;
     }
 
     if (!password) {
-      setError('Please enter a password');
+      setError("Please enter a password");
       return;
     }
 
     if (password.length < 6) {
-      setError('Password should be at least 6 characters long');
+      setError("Password should be at least 6 characters long");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
@@ -56,7 +56,9 @@ function SignUp() {
       <h2>Sign Up</h2>
       <form onSubmit={handleSignUp}>
         <div className="form-group">
-          <label className="label" htmlFor="username">Username</label>
+          <label className="label" htmlFor="username">
+            Username
+          </label>
           <input
             className="input"
             type="text"
@@ -67,7 +69,9 @@ function SignUp() {
           />
         </div>
         <div className="form-group">
-          <label className="label" htmlFor="email">Email</label>
+          <label className="label" htmlFor="email">
+            Email
+          </label>
           <input
             className="input"
             type="email"
@@ -78,7 +82,9 @@ function SignUp() {
           />
         </div>
         <div className="form-group">
-          <label className="label" htmlFor="password">Password</label>
+          <label className="label" htmlFor="password">
+            Password
+          </label>
           <input
             className="input"
             type="password"
@@ -89,7 +95,9 @@ function SignUp() {
           />
         </div>
         <div className="form-group">
-          <label className="label" htmlFor="confirmPassword">Confirm Password</label>
+          <label className="label" htmlFor="confirmPassword">
+            Confirm Password
+          </label>
           <input
             className="input"
             type="password"
@@ -100,9 +108,15 @@ function SignUp() {
           />
         </div>
         {error && <p className="error">{error}</p>}
-        <button type="submit" className="button">Sign Up</button>
+        <Link to="/home">
+          <button type="submit" className="button">
+            Sign Up
+          </button>
+        </Link>
       </form>
-      <p>Already have an account? <Link to="/signin">Sign in here</Link></p>
+      <p>
+        Already have an account? <Link to="/signin">Sign in here</Link>
+      </p>
     </div>
   );
 }

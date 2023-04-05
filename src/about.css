@@ -1,0 +1,30 @@
+.about {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .about .top-bar {
+    height: 65px;
+    background-color: #0d6db2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .about .top-bar-button {
+    margin: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+    background-color: transparent;
+    font-size: 27px;
+  
+  }
+  
+  .about .content {
+    flex: 1;
+  }

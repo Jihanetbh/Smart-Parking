@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './signin.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "./signin.css";
 
 function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSignIn = (event) => {
     event.preventDefault();
     // Handle sign in logic here
-  }
+  };
 
   return (
     <div className="container">
       <h2>Sign In</h2>
       <form onSubmit={handleSignIn}>
         <div className="form-group">
-          <label className="label" htmlFor="email">Email</label>
+          <label className="label" htmlFor="email">
+            Email
+          </label>
           <input
             className="input"
             type="email"
@@ -28,7 +30,9 @@ function SignIn() {
           />
         </div>
         <div className="form-group">
-          <label className="label" htmlFor="password">Password</label>
+          <label className="label" htmlFor="password">
+            Password
+          </label>
           <input
             className="input"
             type="password"
@@ -39,9 +43,15 @@ function SignIn() {
           />
         </div>
         {error && <p className="error">{error}</p>}
-        <button type="submit" className="button">Sign In</button>
+        <Link to="/home">
+          <button type="submit" className="button">
+            Sign In
+          </button>
+        </Link>
       </form>
-      <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
+      <p>
+        Don't have an account? <Link to="/signup">Sign up here</Link>
+      </p>
       <Link to="/signup">
         <button className="button">Sign up</button>
       </Link>
