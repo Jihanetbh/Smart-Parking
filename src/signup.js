@@ -3,52 +3,35 @@ import { Link } from "react-router-dom";
 import "./signup.css";
 
 function SignUp() {
-  const [username, setUsername] = useState("");
+  const [username, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleSignUp = (event) => {
     event.preventDefault();
-    setError("");
 
-    if (!username) {
-      setError("Please enter a username");
-      return;
-    }
-
-    if (!email) {
-      setError("Please enter an email address");
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
-    if (!password) {
-      setError("Please enter a password");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password should be at least 6 characters long");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    // Handle sign up logic here
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    // Send a POST request to the server to sign up the user
+    fetch("http://localhost:3000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          // Sign up successful, redirect to home page
+          window.location.href = "/home";
+        } else {
+          // Sign up failed, display error message
+          setError("Failed to sign up. Please try again.");
+        }
+      })
+      .catch((error) => {
+        // Error occurred while sending request, display error message
+        setError("An error occurred while signing up");
+      });
   };
 
   return (
@@ -65,7 +48,7 @@ function SignUp() {
             id="username"
             name="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="form-group">
@@ -94,29 +77,17 @@ function SignUp() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className="form-group">
-          <label className="label" htmlFor="confirmPassword">
-            Confirm Password
-          </label>
-          <input
-            className="input"
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
         {error && <p className="error">{error}</p>}
-        <Link to="/home">
-          <button type="submit" className="button">
-            Sign Up
-          </button>
-        </Link>
+        <button type="submit" className="button">
+          Sign Up
+        </button>
       </form>
       <p>
         Already have an account? <Link to="/signin">Sign in here</Link>
       </p>
+      <Link to="/signin">
+        <button className="button">Sign in</button>
+      </Link>
     </div>
   );
 }

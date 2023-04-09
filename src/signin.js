@@ -9,7 +9,29 @@ function SignIn() {
 
   const handleSignIn = (event) => {
     event.preventDefault();
-    // Handle sign in logic here
+
+    // Send a POST request to the server to sign in the user
+    fetch("http://localhost:3000/login", {
+      // send request to backend server running on port 3000
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          // Sign in successful, redirect to home page
+          window.location.href = "/home";
+        } else {
+          // Sign in failed, display error message
+          setError("Invalid email or password");
+        }
+      })
+      .catch((error) => {
+        // Error occurred while sending request, display error message
+        setError("An error occurred while signing in");
+      });
   };
 
   return (
@@ -43,18 +65,13 @@ function SignIn() {
           />
         </div>
         {error && <p className="error">{error}</p>}
-        <Link to="/home">
-          <button type="submit" className="button">
-            Sign In
-          </button>
-        </Link>
+        <button type="submit" className="button">
+          Sign In
+        </button>
       </form>
       <p>
         Don't have an account? <Link to="/signup">Sign up here</Link>
       </p>
-      <Link to="/signup">
-        <button className="button">Sign up</button>
-      </Link>
     </div>
   );
 }
