@@ -4,6 +4,7 @@
   align-items: center;
 }
 
+
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -19,7 +20,7 @@
 }
 
 .top-bar-button {
-  background-color: #cfd8dc;
+  
   color: #1e1e1e;
   border: none;
   border-radius: 8px;
@@ -56,7 +57,7 @@
 .hero-section p {
   font-size: 24px;
   margin-bottom: 40px;
-  color: #4a4a4a;
+  color: #147a49;
 }
 
 .hero-button {

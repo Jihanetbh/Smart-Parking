@@ -1,4 +1,4 @@
-import spLogo from './splogo.png';
+import SP from './SP.svg';
 import React from 'react';
 import './home.css';
 
@@ -7,7 +7,7 @@ function Home() {
     <div className="home">
       <div className="top-bar">
         <div className="logo">
-          <img src={spLogo} alt="Smart Parking Logo" style={{ height: "50px" }} />
+          <img src={SP} alt="Smart Parking Logo" style={{ height: "50px" }} />
         </div>
         <div className="nav-links">
           <a href="/home">
@@ -33,7 +33,9 @@ function Home() {
       <div className="hero-section">
         <h1>Welcome to Smart Parking</h1>
         <p>Find and reserve parking spots in seconds!</p>
-        <button className="hero-button">Book Now</button>
+        <a href="/book">
+        <button className="hero-button">Book Now</button>   
+        </a>
       </div>
       <div className="info-section">
         <div className="info-card">
