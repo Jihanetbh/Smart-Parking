@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./signin.css";
 
 function SignIn() {
-  const [email, setEmail] = useState("");
+  const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -17,7 +17,7 @@ function SignIn() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, password }),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -25,7 +25,7 @@ function SignIn() {
           window.location.href = "/home";
         } else {
           // Sign in failed, display error message
-          setError("Invalid email or password");
+          setError("Invalid username or password");
         }
       })
       .catch((error) => {
@@ -39,16 +39,16 @@ function SignIn() {
       <h2>Sign In</h2>
       <form onSubmit={handleSignIn}>
         <div className="form-group">
-          <label className="label" htmlFor="email">
-            Email
+          <label className="label" htmlFor="username">
+            Username
           </label>
           <input
             className="input"
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="username"
+            id="username"
+            name="username"
+            value={username}
+            onChange={(e) => setusername(e.target.value)}
           />
         </div>
         <div className="form-group">
