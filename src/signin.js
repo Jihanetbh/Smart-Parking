@@ -41,8 +41,6 @@ function SignIn() {
         <div className="form-group">
           <label className="label" htmlFor="username">
             Username
-          <label className="label" htmlFor="username">
-            Username
           </label>
           <input
             className="input"
@@ -50,7 +48,7 @@ function SignIn() {
             id="username"
             name="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setusername(e.target.value)}
           />
         </div>
         <div className="form-group">
