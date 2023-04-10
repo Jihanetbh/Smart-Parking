@@ -3,6 +3,11 @@
     display: flex;
     flex-direction: column;
   }
+  body {
+    background-image: url("background.jpg");
+    background-size: cover;
+    backdrop-filter: blur(5px);
+  }
   
   .about .top-bar {
     height: 65px;

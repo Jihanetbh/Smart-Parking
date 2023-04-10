@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./signin.css";
 
 function SignIn() {
-  const [username, setusername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -44,11 +44,11 @@ function SignIn() {
           </label>
           <input
             className="input"
-            type="username"
+            type="text"
             id="username"
             name="username"
             value={username}
-            onChange={(e) => setusername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div className="form-group">
