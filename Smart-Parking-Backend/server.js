@@ -91,23 +91,19 @@ app.use((req, res, next) => {
 
 // Define API endpoints
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
-  connection.query(query, (err, results) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {
-      console.log("Error querying MySQL database:", err);
-      console.log("Query:", query);
+      console.log("Error authenticating user:", err);
       res.status(500).json({ error: "Internal server error" });
       return;
     }
-    if (results.length === 0) {
-      res.status(401).json({ error: "Invalid username or password" });
-      console.log("User authentication failed: Invalid username or password");
+    if (!user) {
+      res.status(401).json({ error: info.message });
       return;
     }
-    const user = results[0];
-    res.status(200).json({ user });
-  });
+    const token = jwt.sign({ id: user.id }, "secret", { expiresIn: "1h" });
+    res.status(200).json({ token });
+  })(req, res);
 });
 
 app.post("/register", (req, res) => {
