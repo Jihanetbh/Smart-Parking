@@ -48,7 +48,7 @@ function SignIn() {
             id="username"
             name="username"
             value={username}
-            onChange={(e) => setusername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div className="form-group">
