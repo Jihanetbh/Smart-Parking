@@ -6,6 +6,7 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
 const mysql = require("mysql");
+const bcrypt = require("bcryptjs");
 
 // Create connection to MySQL database
 const connection = mysql.createConnection({
@@ -89,26 +90,54 @@ app.use((req, res, next) => {
   next();
 });
 
-// Define API endpoints
 app.post("/login", (req, res) => {
-  passport.authenticate("local", { session: false }, (err, user, info) => {
+  console.log("req.body:", req.body);
+  const { username, password } = req.body;
+
+  // Retrieve the user from the database based on the username
+  const query = `SELECT * FROM users WHERE username = '${username}'`;
+  connection.query(query, (err, results) => {
     if (err) {
-      console.log("Error authenticating user:", err);
+      console.log("Error retrieving user from MySQL database:", err);
+      console.log("Query:", query);
       res.status(500).json({ error: "Internal server error" });
       return;
     }
-    if (!user) {
-      res.status(401).json({ error: info.message });
+
+    // Check if user with given username exists
+    if (results.length === 0) {
+      res.status(401).json({ error: "Invalid credentials" });
       return;
     }
-    const token = jwt.sign({ id: user.id }, "secret", { expiresIn: "1h" });
+
+    // Get the hash and salt values from the stored password
+    const storedHash = results[0].Password;
+    const storedSalt = results[0].salt;
+
+    // Hash the entered password with the stored salt value
+    const hash = bcrypt.hashSync(password, storedSalt);
+
+    // Compare the stored hash value with the hash of the entered password
+    if (storedHash !== hash) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
+
+    // Generate and return a JWT token
+    const userId = results[0].id;
+    const token = jwt.sign({ id: userId }, "secret", { expiresIn: "1h" });
     res.status(200).json({ token });
-  })(req, res);
+  });
 });
 
 app.post("/register", (req, res) => {
   const { username, email, password } = req.body;
-  const query = `INSERT INTO users (username, email, password) VALUES ('${username}', '${email}', '${password}')`;
+
+  // Hash the password using bcrypt
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+
+  const query = `INSERT INTO users (username, email, password, salt) VALUES ('${username}', '${email}', '${hash}', '${salt}')`;
   connection.query(query, (err, results) => {
     if (err) {
       console.log("Error inserting user into MySQL database:", err);
@@ -116,7 +145,9 @@ app.post("/register", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
       return;
     }
-    res.status(200).json({ message: "User registration successful" });
+    const userId = results.insertId;
+    const token = jwt.sign({ id: userId }, "secret");
+    res.status(200).json({ token });
   });
 });
 
