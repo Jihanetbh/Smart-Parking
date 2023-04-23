@@ -151,6 +151,26 @@ app.post("/register", (req, res) => {
   });
 });
 
+app.get("/parking-spots", (req, res) => {
+  const { disabled } = req.query;
+  console.log("disabled:", disabled);
+  let query = `SELECT * FROM parking_spots WHERE is_taken = 0`;
+
+  if (disabled === "true") {
+    query += ` AND is_disabled = 1`;
+  }
+
+  connection.query(query, (err, results) => {
+    console.log("results:", res);
+    if (err) {
+      console.log("Error querying MySQL database:", err);
+      console.log("Query:", query);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    return res.status(200).json(results);
+  });
+});
+
 // Define API endpoint to retrieve user information
 app.get(
   "/user",
