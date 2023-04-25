@@ -30,6 +30,27 @@ function Book() {
           const randomSpot =
             freeSpots[Math.floor(Math.random() * freeSpots.length)];
           setAssignedSpot(randomSpot.spot_number);
+          // Send a POST request to book the selected spot
+          const data = {
+            spot_number: randomSpot.spot_number,
+            booking_start: new Date()
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " "),
+          };
+          fetch("http://localhost:3000/book", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Failed to book spot");
+              }
+            })
+            .catch((error) => console.error(error));
         } else {
           setAssignedSpot(null);
         }
