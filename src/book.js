@@ -4,12 +4,18 @@ import "./book.css";
 function Book() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [assignedSpot, setAssignedSpot] = useState(null);
+  const [bookingStart, setBookingStart] = useState("");
+  const [bookingEnd, setBookingEnd] = useState("");
 
   const handleCheckboxChange = (event) => {
     setIsDisabled(event.target.checked);
   };
 
   const handleSearch = () => {
+    // Get the values of the datetime-local inputs
+    const bookingStart = document.getElementById("booking-start").value;
+    const bookingEnd = document.getElementById("booking-end").value;
+
     // Send a request to the server to get free spots
     const url = "http://localhost:3000/parking-spots";
 
@@ -33,10 +39,8 @@ function Book() {
           // Send a POST request to book the selected spot
           const data = {
             spot_number: randomSpot.spot_number,
-            booking_start: new Date()
-              .toISOString()
-              .slice(0, 19)
-              .replace("T", " "),
+            booking_start: bookingStart,
+            booking_end: bookingEnd,
           };
           fetch("http://localhost:3000/book", {
             method: "POST",
@@ -89,7 +93,21 @@ function Book() {
           />
           Need a spot for disabled persons
         </label>
-        <br></br>
+        <br />
+        <label>
+          Booking Start:
+          <input
+            type="datetime-local"
+            id="booking-start"
+            name="booking-start"
+          />
+        </label>
+        <br />
+        <label>
+          Booking End:
+          <input type="datetime-local" id="booking-end" name="booking-end" />
+        </label>
+        <br />
         <button onClick={handleSearch}>Search</button>
         {assignedSpot && (
           <p>The spot {assignedSpot} has been assigned to you.</p>

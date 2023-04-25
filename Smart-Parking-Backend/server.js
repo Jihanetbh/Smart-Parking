@@ -166,19 +166,19 @@ app.get("/parking-spots", (req, res) => {
 app.post("/book", (req, res) => {
   const spot_number = req.body.spot_number;
   const username = logged_in_user;
-
-  // Get the current date and time
-  const now = new Date();
+  const booking_start = new Date(req.body.booking_start);
+  const booking_end = new Date(req.body.booking_end);
 
   // Update the row for the assigned spot in the table
   const query = `
     UPDATE parking_spots
     SET is_taken = 1,
         booked_by = ?,
-        booking_start = ?
+        booking_start = ?,
+        booking_end = ?
     WHERE spot_number = ?
   `;
-  const values = [username, now, spot_number];
+  const values = [username, booking_start, booking_end, spot_number];
   connection.query(query, values, (error, result) => {
     if (error) {
       console.error(error);
