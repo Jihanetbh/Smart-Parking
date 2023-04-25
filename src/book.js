@@ -6,6 +6,7 @@ function Book() {
   const [assignedSpot, setAssignedSpot] = useState(null);
   const [bookingStart, setBookingStart] = useState("");
   const [bookingEnd, setBookingEnd] = useState("");
+  const [error, setError] = useState("");
 
   const handleCheckboxChange = (event) => {
     setIsDisabled(event.target.checked);
@@ -15,6 +16,13 @@ function Book() {
     // Get the values of the datetime-local inputs
     const bookingStart = document.getElementById("booking-start").value;
     const bookingEnd = document.getElementById("booking-end").value;
+
+    // Check if booking start time is later than booking end time
+    if (new Date(bookingStart) > new Date(bookingEnd)) {
+      // Set an error message and return without searching for spots
+      setError("Booking start time cannot be later than booking end time");
+      return;
+    }
 
     // Send a request to the server to get free spots
     const url = "http://localhost:3000/parking-spots";
@@ -100,13 +108,24 @@ function Book() {
             type="datetime-local"
             id="booking-start"
             name="booking-start"
+            value={bookingStart}
+            onChange={(e) => setBookingStart(e.target.value)}
           />
         </label>
         <br />
         <label>
           Booking End:
-          <input type="datetime-local" id="booking-end" name="booking-end" />
+          <input
+            type="datetime-local"
+            id="booking-end"
+            name="booking-end"
+            value={bookingEnd}
+            onChange={(e) => setBookingEnd(e.target.value)}
+          />
         </label>
+        {bookingStart > bookingEnd && (
+          <p style={{ color: "red" }}>Start date must be before end date.</p>
+        )}
         <br />
         <button onClick={handleSearch}>Search</button>
         {assignedSpot && (

@@ -133,7 +133,9 @@ app.post("/register", (req, res) => {
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
 
-  const query = `INSERT INTO users (username, email, password, salt) VALUES ('${username}', '${email}', '${hash}', '${salt}')`;
+  const balance = 100; // set initial balance to 100 dollars
+
+  const query = `INSERT INTO users (username, email, password, salt, balance) VALUES ('${username}', '${email}', '${password}', '${salt}', '${balance}')`;
   connection.query(query, (err, results) => {
     if (err) {
       console.log("Error inserting user into MySQL database:", err);
