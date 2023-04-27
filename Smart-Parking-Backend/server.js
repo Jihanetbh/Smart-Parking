@@ -201,6 +201,24 @@ app.get(
   }
 );
 
+app.get("/balance", (req, res) => {
+  const sql = `SELECT * FROM users WHERE username = ?`;
+  connection.query(sql, [logged_in_user], (error, results, fields) => {
+    if (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json({ message: "User Not Found" });
+      return;
+    }
+    const balance = results[0].balance;
+    console.log(balance);
+    res.json({ balance });
+  });
+});
+
 // Start the server
 app.listen(3000, () => {
   console.log("Server listening on port 3000");

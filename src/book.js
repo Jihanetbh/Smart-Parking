@@ -7,6 +7,8 @@ function Book() {
   const [bookingStart, setBookingStart] = useState("");
   const [bookingEnd, setBookingEnd] = useState("");
   const [error, setError] = useState("");
+  let [balance, setBalance] = useState(null);
+  const [cost, setCost] = useState(null);
 
   const handleCheckboxChange = (event) => {
     setIsDisabled(event.target.checked);
@@ -44,23 +46,55 @@ function Book() {
           if (freeSpots.length > 0) {
             const randomSpot =
               freeSpots[Math.floor(Math.random() * freeSpots.length)];
-            setAssignedSpot(randomSpot.spot_number);
-            // Send a POST request to book the selected spot
-            const data = {
-              spot_number: randomSpot.spot_number,
-              booking_start: bookingStart,
-              booking_end: bookingEnd,
-            };
-            fetch("http://localhost:3000/book", {
-              method: "POST",
+
+            // Calculate the cost of the spot
+            const startTime = new Date(bookingStart);
+            const endTime = new Date(bookingEnd);
+            const durationMs = endTime - startTime;
+            const durationHours = durationMs / 3600000;
+            const cost = durationHours * 0.5;
+            console.log("Duration (hours):", durationHours);
+            console.log("Cost :", cost);
+
+            // Send a request to the server to get the user's balance
+            fetch("http://localhost:3000/balance", {
+              method: "GET",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(data),
             })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error("Failed to book spot");
+              .then((response) => response.json())
+              .then((data) => {
+                // set the balance state variable here
+                const balance = data.balance;
+                setBalance(balance);
+
+                // check if the cost is greater than the balance
+                if (cost > balance) {
+                  console.log("Insufficient funds");
+                  setError("Insufficient funds");
+                } else {
+                  setAssignedSpot(randomSpot.spot_number);
+                  // Send a POST request to book the selected spot
+                  const data = {
+                    spot_number: randomSpot.spot_number,
+                    booking_start: bookingStart,
+                    booking_end: bookingEnd,
+                  };
+                  fetch("http://localhost:3000/book", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                  })
+                    .then((response) => {
+                      if (!response.ok) {
+                        throw new Error("Failed to book spot");
+                      }
+                    })
+                    .catch((error) => console.error(error));
+                  console.log("balance", balance);
                 }
               })
               .catch((error) => console.error(error));
