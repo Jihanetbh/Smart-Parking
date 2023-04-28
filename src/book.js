@@ -204,7 +204,7 @@ function BookASpot() {
   return (
     <div>
       <h1>Book a spot</h1>
-      <div className="form">
+      <div className="foorm">
         <form >
           <label>
             Driver's name:
