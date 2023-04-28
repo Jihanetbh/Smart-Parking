@@ -94,6 +94,23 @@ function Book() {
                       }
                     })
                     .catch((error) => console.error(error));
+                  // Send a POST request to update the user's balance
+                  fetch("http://localhost:3000/update-balance", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ cost }),
+                  })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      // Update the balance state variable
+                      setBalance(data.newBalance);
+                      console.log("New balance:", data.newBalance);
+                    })
+                    .catch((error) => {
+                      console.error("Error updating balance:", error);
+                    });
                   console.log("balance", balance);
                 }
               })

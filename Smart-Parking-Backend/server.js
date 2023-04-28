@@ -219,6 +219,26 @@ app.get("/balance", (req, res) => {
   });
 });
 
+app.post("/update-balance", (req, res) => {
+  const { cost } = req.body;
+  const sql = `UPDATE users SET balance = balance - ? WHERE username = ?`;
+  const params = [cost, logged_in_user];
+  connection.query(sql, params, function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Failed to update balance" });
+    }
+    const sql = `SELECT balance FROM users WHERE username = ?`;
+    const params = [logged_in_user];
+    connection.query(sql, params, (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to get updated balance" });
+      }
+      const newBalance = row[0].balance;
+      res.json({ newBalance });
+    });
+  });
+});
+
 // Start the server
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
