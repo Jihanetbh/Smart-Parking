@@ -1,7 +1,7 @@
 .about {
-    height: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
   body {
     background-image: url("background.jpg");
@@ -9,24 +9,36 @@
     backdrop-filter: blur(5px);
   }
   
-  .about .top-bar {
-    height: 65px;
-    background-color: #0d6db2;
-    color: white;
+  .top-bar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    width: 100%;
+    background-color: #1e1e1e;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .about .top-bar-button {
-    margin: 10px;
-    padding: 10px;
+  .logo {
+    width: 10px; 
+  }
+  
+  .top-bar-button {
+    
+    color: #1e1e1e;
     border: none;
-    border-radius: 5px;
-    color: #fff;
+    border-radius: 8px;
+    font-size: 16px;
     font-weight: bold;
-    background-color: transparent;
-    font-size: 27px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .top-bar-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   
   }
   
