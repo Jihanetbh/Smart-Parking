@@ -1,4 +1,3 @@
-import SP from "./SP.svg";
 import React, { useState } from "react";
 import "./book.css";
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
@@ -222,10 +221,47 @@ function BookASpot() {
           <button type="submit">Book</button>
         </form>
       </div>
+      <div className="form">
+        <label>
+          <input
+            type="checkbox"
+            checked={isDisabled}
+            onChange={handleCheckboxChange}
+          />
+          Need a spot for disabled persons
+        </label>
+        <br />
+        <label>
+          Booking Start:
+          <input
+            type="datetime-local"
+            id="booking-start"
+            name="booking-start"
+            value={bookingStart}
+            onChange={(e) => setBookingStart(e.target.value)}
+          />
+        </label>
+        <br />
+        <label>
+          Booking End:
+          <input
+            type="datetime-local"
+            id="booking-end"
+            name="booking-end"
+            value={bookingEnd}
+            onChange={(e) => setBookingEnd(e.target.value)}
+          />
+        </label>
+        {bookingStart > bookingEnd && (
+          <p style={{ color: "red" }}>Start date must be before end date.</p>
+        )}
+        <br />
+        <button onClick={handleSearch}>Search</button>
+        {assignedSpot && (
+          <p>The spot {assignedSpot} has been assigned to you.</p>
+        )}
+      </div>
     </div>
   );
 }
-
-
-
 export default Book;
