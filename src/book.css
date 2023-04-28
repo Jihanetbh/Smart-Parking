@@ -102,7 +102,7 @@
     color: rgb(235, 222, 207);
   }
 
-  .foorm{
+  .form{
     display: flex;
     flex-direction: column;
     justify-items: center;
