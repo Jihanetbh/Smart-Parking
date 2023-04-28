@@ -28,14 +28,10 @@ connection.connect((err) => {
 // Configure passport
 passport.use(
   new LocalStrategy((username, password, done) => {
-    console.log("username:", username);
-    console.log("password:", password);
     const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
-    console.log(query);
     connection.query(query, (err, results) => {
       if (err) {
         console.log("Error querying MySQL database:", err);
-        console.log("Query:", query);
         return done(err);
       }
       if (results.length === 0) {
@@ -57,7 +53,6 @@ passport.use(
       connection.query(query, (err, results) => {
         if (err) {
           console.log("Error querying MySQL database:", err);
-          console.log("Query:", query);
           return done(err, false);
         }
         if (results.length === 0) {
@@ -90,8 +85,9 @@ app.use((req, res, next) => {
   next();
 });
 
+let logged_in_user = "";
+
 app.post("/login", (req, res) => {
-  console.log("req.body:", req.body);
   const { username, password } = req.body;
 
   // Retrieve the user from the database based on the username
@@ -99,7 +95,6 @@ app.post("/login", (req, res) => {
   connection.query(query, (err, results) => {
     if (err) {
       console.log("Error retrieving user from MySQL database:", err);
-      console.log("Query:", query);
       res.status(500).json({ error: "Internal server error" });
       return;
     }
@@ -123,10 +118,11 @@ app.post("/login", (req, res) => {
       return;
     }
 
-    // Generate and return a JWT token
-    const userId = results[0].id;
-    const token = jwt.sign({ id: userId }, "secret", { expiresIn: "1h" });
-    res.status(200).json({ token });
+    // If login is successful, assign the username to the global variable
+    logged_in_user = username;
+
+    // Return success message
+    res.status(200).json({ message: "Login successful" });
   });
 });
 
@@ -137,17 +133,61 @@ app.post("/register", (req, res) => {
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
 
-  const query = `INSERT INTO users (username, email, password, salt) VALUES ('${username}', '${email}', '${hash}', '${salt}')`;
+  const balance = 100; // set initial balance to 100 dollars
+
+  const query = `INSERT INTO users (username, email, password, salt, balance) VALUES ('${username}', '${email}', '${password}', '${salt}', '${balance}')`;
   connection.query(query, (err, results) => {
     if (err) {
       console.log("Error inserting user into MySQL database:", err);
-      console.log("Query:", query);
       res.status(500).json({ error: "Internal server error" });
       return;
     }
     const userId = results.insertId;
     const token = jwt.sign({ id: userId }, "secret");
     res.status(200).json({ token });
+    logged_in_user = username;
+  });
+});
+
+app.get("/parking-spots", (req, res) => {
+  const { disabled } = req.query;
+  let query = `SELECT * FROM parking_spots WHERE is_taken = 0`;
+
+  if (disabled === "true") {
+    query += ` AND is_disabled = 1`;
+  }
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.log("Error querying MySQL database:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    return res.status(200).json(results);
+  });
+});
+
+app.post("/book", (req, res) => {
+  const spot_number = req.body.spot_number;
+  const username = logged_in_user;
+  const booking_start = new Date(req.body.booking_start);
+  const booking_end = new Date(req.body.booking_end);
+
+  // Update the row for the assigned spot in the table
+  const query = `
+    UPDATE parking_spots
+    SET is_taken = 1,
+        booked_by = ?,
+        booking_start = ?,
+        booking_end = ?
+    WHERE spot_number = ?
+  `;
+  const values = [username, booking_start, booking_end, spot_number];
+  connection.query(query, values, (error, result) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(200);
+    }
   });
 });
 
@@ -160,6 +200,44 @@ app.get(
     res.status(200).json({ user });
   }
 );
+
+app.get("/balance", (req, res) => {
+  const sql = `SELECT * FROM users WHERE username = ?`;
+  connection.query(sql, [logged_in_user], (error, results, fields) => {
+    if (error) {
+      console.log(error);
+      res.status(500).json({ message: "Internal Server Error" });
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json({ message: "User Not Found" });
+      return;
+    }
+    const balance = results[0].balance;
+    console.log(balance);
+    res.json({ balance });
+  });
+});
+
+app.post("/update-balance", (req, res) => {
+  const { cost } = req.body;
+  const sql = `UPDATE users SET balance = balance - ? WHERE username = ?`;
+  const params = [cost, logged_in_user];
+  connection.query(sql, params, function (err) {
+    if (err) {
+      return res.status(500).json({ error: "Failed to update balance" });
+    }
+    const sql = `SELECT balance FROM users WHERE username = ?`;
+    const params = [logged_in_user];
+    connection.query(sql, params, (err, row) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to get updated balance" });
+      }
+      const newBalance = row[0].balance;
+      res.json({ newBalance });
+    });
+  });
+});
 
 // Start the server
 app.listen(3000, () => {
