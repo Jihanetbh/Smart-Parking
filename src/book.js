@@ -130,10 +130,10 @@ function Book() {
       <div className="book">
         <BookTopBar />      
         <Switch>
-          <Route path="/account">
-            <RegistrationForm />
+          <Route path="/book1">
+            <BookASpot />
           </Route>
-          <Route path="/">
+          <Route path="/book">
             <BookPage />
           </Route>
         </Switch>
@@ -162,50 +162,66 @@ function BookTopBar(){
 function BookPage() {
   return (
     <div>
-      <ClickableImage
-        src="./carrefourparkimg.jpg"
-        alt="Image 1"
-        text="Carrefour Parking"
-        link="/account"
-      />
-      <ClickableImage
-        src="./marjaneparkimg.jpg"
-        alt="Image 2"
-        text="Marjane Parking"
-        link="/account"
-      />
+      <h1>Choose your parking</h1>
+      <h2>Other parking lots will be added sooner. Stay tuned!!!</h2>
+      <div className="img-container">
+        <div>
+          <ClickableImage
+            src="./carrefourparkimg.jpg"
+            alt="Image 1"
+            text="Carrefour Parking"
+            link="/book1"
+          />
+        </div>
+        <div>
+          <ClickableImage 
+            src="./marjaneparkimg.jpg"
+            alt="Image 2"
+            text="Marjane Parking"
+            link="/book1"
+          />
+        </div>
+      </div>
     </div>
   );
 }
 
 function ClickableImage(props) {
   return (
-    <Link to={props.link}>
-      <img src={props.src} alt={props.alt} />
-      <p>{props.text}</p>
-    </Link>
+    <div className="image-container">
+      <Link to={props.link}>
+        <img className="image-shape"
+        src={props.src} 
+        alt={props.alt} />
+        <div className="text-overlay">
+          <p>{props.text}</p>
+        </div>
+      </Link>
+    </div>
   );
 }
 
-function RegistrationForm() {
+function BookASpot() {
   return (
     <div>
-      <h1>Registration Form</h1>
-      <form>
-        <label>
-          Name:
-          <input type="text" name="name" />
-        </label>
-        <label>
-          Email:
-          <input type="email" name="email" />
-        </label>
-        <label>
-          Password:
-          <input type="password" name="password" />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+      <h1>Book a spot</h1>
+      <div className="form">
+        <form >
+          <label>
+            Driver's name:
+            <input type="text" name="name" />
+          </label>
+          <label>
+            Car Model:
+            <input type="text" name="car_model" />
+          </label>
+          <label>
+            Vehicle Number:
+            <input type="text" name="veh_num" />
+          </label>
+          <button type="submit">Book</button>
+        </form>
+      </div>
     </div>
   );
 }
